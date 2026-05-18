@@ -5,6 +5,12 @@
     "lat": -7.0229,
     "lng": 110.4448,
     "priceRange": "Rp15.000 - Rp40.000",
+    "category": "Warung",
+    "operatingHours": {
+      "from": "07:00",
+      "to": "21:00"
+    },
+    "rating": 4,
     "photos": ["/images/soto.jpg"]
   },
   {
@@ -13,6 +19,68 @@
     "lat": -7.0261,
     "lng": 110.4412,
     "priceRange": "Rp10.000 - Rp35.000",
+    "category": "Kedai",
+    "operatingHours": {
+      "from": "09:00",
+      "to": "23:00"
+    },
+    "rating": 5,
     "photos": ["/images/nasgor.jpg"]
+  },
+  {
+    "id": "r3",
+    "name": "Cafe Kopi Pagi Ceria",
+    "lat": -7.0234,
+    "lng": 110.4451,
+    "priceRange": "Rp20.000 - Rp50.000",
+    "category": "Cafe",
+    "operatingHours": {
+      "from": "06:30",
+      "to": "18:00"
+    },
+    "rating": 4,
+    "photos": ["/images/kopi.jpg"]
+  },
+  {
+    "id": "r4",
+    "name": "Resto Ayam Bakar Mak Reja",
+    "lat": -7.0278,
+    "lng": 110.4437,
+    "priceRange": "Rp25.000 - Rp70.000",
+    "category": "Resto",
+    "operatingHours": {
+      "from": "11:00",
+      "to": "22:30"
+    },
+    "rating": 4,
+    "photos": ["/images/ayam.jpg"]
+  },
+  {
+    "id": "r5",
+    "name": "Bakso Juara Tembalang",
+    "lat": -7.0250,
+    "lng": 110.4470,
+    "priceRange": "Rp12.000 - Rp30.000",
+    "category": "Bakso",
+    "operatingHours": {
+      "from": "08:00",
+      "to": "21:00"
+    },
+    "rating": 5,
+    "photos": ["/images/bakso.jpg"]
+  },
+  {
+    "id": "r6",
+    "name": "Geprek Sambal Mertua",
+    "lat": -7.0282,
+    "lng": 110.4418,
+    "priceRange": "Rp18.000 - Rp45.000",
+    "category": "Ayam Geprek",
+    "operatingHours": {
+      "from": "10:00",
+      "to": "00:00"
+    },
+    "rating": 4,
+    "photos": ["/images/geprek.jpg"]
   }
 ]
