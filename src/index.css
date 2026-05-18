@@ -18,19 +18,25 @@ body {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
+.header h1 {
+  margin: 0;
+  font-size: 1.55rem;
+}
+
 .layout {
   display: flex;
   gap: 16px;
   padding: 16px;
+  align-items: stretch;
 }
 
 .sidebar {
-  width: 320px;
-  min-width: 280px;
+  width: 360px;
+  min-width: 320px;
   background: white;
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(30, 40, 70, 0.08);
-  padding: 16px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   transition: transform 0.2s ease;
@@ -44,49 +50,24 @@ body {
   overflow: hidden;
 }
 
-.layout {
-  display: flex;
-  gap: 16px;
-  padding: 16px;
-  align-items: stretch;
-}
-
-.map-hint {
-  position: absolute;
-  left: 20px;
-  bottom: 20px;
-  background: rgba(255, 255, 255, 0.92);
-  padding: 10px 14px;
-  border-radius: 14px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
-  font-size: 0.95rem;
-  color: #1f2937;
-  max-width: 280px;
-}
-
 .sidebar-top {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: center;
-  margin-bottom: 16px;
+  align-items: flex-start;
+  margin-bottom: 18px;
 }
 
 .sidebar-top h2 {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
 }
 
-.sidebar-status {
+.sidebar-status,
+.sidebar-hint {
   margin: 6px 0 0;
   color: #6b7280;
   font-size: 0.95rem;
-}
-
-.recommendation-text {
-  margin: 6px 0 0;
-  color: #111827;
-  font-weight: 600;
 }
 
 .sidebar-toggle {
@@ -94,31 +75,75 @@ body {
   background: #2563eb;
   color: white;
   border-radius: 10px;
-  padding: 8px 12px;
+  padding: 10px 14px;
   cursor: pointer;
 }
 
-.period-controls {
+.filter-section {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 16px;
   margin-bottom: 18px;
 }
 
-.period-controls button {
+.search-box input {
+  width: 100%;
   border: 1px solid #d1d5db;
-  background: white;
-  color: #111827;
-  border-radius: 10px;
-  padding: 10px 12px;
-  text-align: center;
-  cursor: pointer;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
 }
 
-.period-controls button.active {
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip-button {
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  background: white;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chip-button.active {
   background: #2563eb;
   color: white;
   border-color: #2563eb;
+}
+
+.budget-row,
+.sort-row {
+  display: grid;
+  gap: 10px;
+}
+
+.budget-row label,
+.sort-row label {
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.budget-row strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1rem;
+}
+
+.budget-row input[type='range'] {
+  width: 100%;
+}
+
+.sort-row select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #111827;
 }
 
 .restaurant-list {
@@ -126,14 +151,14 @@ body {
   flex-direction: column;
   gap: 14px;
   overflow-y: auto;
-  max-height: calc(100vh - 220px);
+  max-height: calc(100vh - 290px);
   padding-right: 4px;
 }
 
 .restaurant-card {
   border: 1px solid #e5e7eb;
   border-radius: 14px;
-  padding: 14px;
+  padding: 16px;
   background: #ffffff;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 }
@@ -143,6 +168,10 @@ body {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 10px;
+}
+
+.restaurant-title strong {
+  font-size: 1rem;
 }
 
 .restaurant-title span {
@@ -157,6 +186,7 @@ body {
   font-size: 0.95rem;
   color: #4b5563;
   margin-bottom: 6px;
+  line-height: 1.5;
 }
 
 .rating-row {
@@ -257,6 +287,17 @@ body {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+@media (max-width: 1080px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: unset;
+  }
 }
 
 .cancel-button,

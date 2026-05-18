@@ -1,30 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import MapView from './components/MapView'
+import restaurantData from '../data/restaurants.json'
 
-const TIME_LABELS = {
-  all: 'Semua',
-  morning: 'Pagi',
-  noon: 'Siang',
-  night: 'Malam'
+const UNDIP_POSITION = {
+  lat: -7.0265,
+  lng: 110.4389
 }
 
-const TIME_WINDOWS = {
-  morning: { min: 360, max: 660 },
-  noon: { min: 660, max: 960 },
-  night: { min: 960, max: 1320 }
+const CATEGORY_OPTIONS = ['all', 'Warung', 'Kantin', 'Angkringan', 'Kafe']
+const SORT_OPTIONS = [
+  { value: 'recommended', label: 'Rekomendasi' },
+  { value: 'terdekat', label: 'Terdekat' },
+  { value: 'termurah', label: 'Termurah' },
+  { value: 'rating', label: 'Rating Tertinggi' }
+]
+
+const PRICE_SLIDER_MIN = 5000
+const PRICE_SLIDER_MAX = 50000
+
+function parsePriceValue(raw) {
+  return Number(raw.replace(/\D/g, '')) || 0
 }
 
-function parseMinutes(time) {
-  const [hour, minute] = time.split(':').map(Number)
-  return hour * 60 + minute
-}
-
-function isOpenAt(period, hours) {
-  if (!hours || !hours.from || !hours.to) return false
-  const time = parseMinutes(hours.from)
-  const end = parseMinutes(hours.to)
-  const { min, max } = TIME_WINDOWS[period]
-  return time <= max && end >= min
+function getPriceRange(priceRange) {
+  if (!priceRange) return { min: 0, max: 0 }
+  const [minRaw, maxRaw] = priceRange.split('-').map((part) => part.trim())
+  return {
+    min: parsePriceValue(minRaw),
+    max: parsePriceValue(maxRaw)
+  }
 }
 
 function distanceKm(lat1, lng1, lat2, lng2) {
@@ -36,37 +40,26 @@ function distanceKm(lat1, lng1, lat2, lng2) {
     Math.sin(dLat / 2) ** 2 +
     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return (R * c).toFixed(2)
+  return R * c
 }
 
-function getCurrentPeriod() {
-  const hour = new Date().getHours()
-  if (hour >= 5 && hour < 11) return 'morning'
-  if (hour >= 11 && hour < 15) return 'noon'
-  if (hour >= 15 && hour < 22) return 'night'
-  return 'all'
+function formatCurrency(value) {
+  return value.toLocaleString('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0
+  })
 }
 
 export default function App() {
-  const [places, setPlaces] = useState([])
-  const [filter, setFilter] = useState('all')
+  const [places, setPlaces] = useState(restaurantData)
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [category, setCategory] = useState('all')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [budgetMax, setBudgetMax] = useState(PRICE_SLIDER_MAX)
+  const [sortBy, setSortBy] = useState('recommended')
   const [userPosition, setUserPosition] = useState(null)
   const [geoError, setGeoError] = useState('Menunggu izin lokasi...')
-  const [recommendation, setRecommendation] = useState('')
-
-  useEffect(() => {
-    fetch('/data/restaurants.json')
-      .then((response) => response.json())
-      .then((data) => setPlaces(data))
-      .catch(() => setPlaces([]))
-  }, [])
-
-  useEffect(() => {
-    const period = getCurrentPeriod()
-    setFilter(period)
-    setRecommendation(TIME_LABELS[period])
-  }, [])
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -88,10 +81,46 @@ export default function App() {
     )
   }, [])
 
-  const filteredPlaces = places.filter((place) => {
-    if (filter === 'all') return true
-    return isOpenAt(filter, place.operatingHours)
-  })
+  const placesWithMeta = useMemo(
+    () =>
+      places.map((place) => {
+        const price = getPriceRange(place.priceRange)
+        const distance = Math.round(
+          distanceKm(UNDIP_POSITION.lat, UNDIP_POSITION.lng, place.lat, place.lng) * 1000
+        )
+        return { ...place, price, distance }
+      }),
+    [places]
+  )
+
+  const normalizedSearch = searchTerm.trim().toLowerCase()
+
+  const filteredPlaces = useMemo(() => {
+    return placesWithMeta
+      .filter((place) => {
+        const matchesCategory =
+          category === 'all' || place.category.toLowerCase() === category.toLowerCase()
+        const matchesBudget = place.price.min <= budgetMax
+        const matchesSearch =
+          normalizedSearch === '' ||
+          place.name.toLowerCase().includes(normalizedSearch) ||
+          place.menu.some((menuItem) => menuItem.toLowerCase().includes(normalizedSearch))
+
+        return matchesCategory && matchesBudget && matchesSearch
+      })
+      .sort((a, b) => {
+        if (sortBy === 'terdekat') {
+          return a.distance - b.distance
+        }
+        if (sortBy === 'termurah') {
+          return a.price.min - b.price.min
+        }
+        if (sortBy === 'rating') {
+          return b.rating - a.rating
+        }
+        return b.rating - a.rating || a.distance - b.distance
+      })
+  }, [placesWithMeta, category, normalizedSearch, budgetMax, sortBy])
 
   const handleRating = (id, rating) => {
     setPlaces((current) =>
@@ -106,16 +135,16 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>Tempat Makan Tembalang</h1>
+        <h1>Rekomendasi Tempat Makan Tembalang</h1>
       </header>
       <div className="layout">
         <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
           <div className="sidebar-top">
             <div>
-              <h2>Menu</h2>
+              <h2>Filter & Cari</h2>
               <p className="sidebar-status">{geoError}</p>
-              <p className="recommendation-text">
-                Rekomendasi otomatis: {recommendation || TIME_LABELS.all}
+              <p className="sidebar-hint">
+                Filter berdasarkan kategori, budget, dan urutkan tempat makan.
               </p>
             </div>
             <button className="sidebar-toggle" onClick={() => setSidebarOpen((open) => !open)}>
@@ -123,37 +152,72 @@ export default function App() {
             </button>
           </div>
 
-          <div className="period-controls">
-            {Object.keys(TIME_LABELS).map((key) => (
-              <button
-                key={key}
-                className={filter === key ? 'active' : ''}
-                onClick={() => setFilter(key)}
-              >
-                {TIME_LABELS[key]}
-              </button>
-            ))}
+          <div className="filter-section">
+            <div className="search-box">
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Cari nama tempat atau menu"
+              />
+            </div>
+
+            <div className="chip-group">
+              {CATEGORY_OPTIONS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={`chip-button ${category === option ? 'active' : ''}`}
+                  onClick={() => setCategory(option)}
+                >
+                  {option === 'all' ? 'Semua' : option}
+                </button>
+              ))}
+            </div>
+
+            <div className="budget-row">
+              <div>
+                <label>Budget maksimum</label>
+                <strong>{formatCurrency(budgetMax)}</strong>
+              </div>
+              <input
+                type="range"
+                min={PRICE_SLIDER_MIN}
+                max={PRICE_SLIDER_MAX}
+                step={5000}
+                value={budgetMax}
+                onChange={(e) => setBudgetMax(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sort-row">
+              <label>Urutkan berdasarkan</label>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="restaurant-list">
             {filteredPlaces.length === 0 ? (
-              <p className="empty-message">Tidak ada tempat makan untuk periode ini.</p>
+              <p className="empty-message">Tidak ada tempat makan dengan filter ini.</p>
             ) : (
               filteredPlaces.map((place) => (
                 <div key={place.id} className="restaurant-card">
                   <div className="restaurant-title">
                     <strong>{place.name}</strong>
-                    <span>{place.category || 'Umum'}</span>
+                    <span>{place.category}</span>
                   </div>
-                  <div className="restaurant-meta">{place.priceRange}</div>
+                  <div className="restaurant-meta">Harga: {place.priceRange}</div>
+                  <div className="restaurant-meta">Menu: {place.menu.join(', ')}</div>
                   <div className="restaurant-meta">
-                    Jam buka: {place.operatingHours?.from} - {place.operatingHours?.to}
+                    Jarak dari UNDIP: {place.distance} meter
                   </div>
                   <div className="restaurant-meta">
-                    Jarak:{' '}
-                    {userPosition
-                      ? `${distanceKm(userPosition.lat, userPosition.lng, place.lat, place.lng)} km`
-                      : 'GPS belum tersedia'}
+                    Jam buka: {place.operatingHours.from} - {place.operatingHours.to}
                   </div>
                   <div className="rating-row">
                     <span>Rating:</span>

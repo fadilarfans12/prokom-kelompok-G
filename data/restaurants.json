@@ -2,85 +2,113 @@
   {
     "id": "r1",
     "name": "Warung Soto Tembalang",
-    "lat": -7.0229,
-    "lng": 110.4448,
-    "priceRange": "Rp15.000 - Rp40.000",
+    "lat": -7.0262,
+    "lng": 110.4405,
+    "priceRange": "Rp10.000 - Rp35.000",
     "category": "Warung",
     "operatingHours": {
       "from": "07:00",
       "to": "21:00"
     },
     "rating": 4,
-    "photos": ["/images/soto.jpg"]
+    "menu": ["Soto", "Nasi Campur", "Es Teh"]
   },
   {
     "id": "r2",
-    "name": "Kedai Nasi Goreng Pak Aan",
-    "lat": -7.0261,
-    "lng": 110.4412,
-    "priceRange": "Rp10.000 - Rp35.000",
-    "category": "Kedai",
+    "name": "Kantin Kampus Unggul",
+    "lat": -7.0254,
+    "lng": 110.4392,
+    "priceRange": "Rp8.000 - Rp22.000",
+    "category": "Kantin",
     "operatingHours": {
-      "from": "09:00",
-      "to": "23:00"
+      "from": "08:00",
+      "to": "20:00"
     },
     "rating": 5,
-    "photos": ["/images/nasgor.jpg"]
+    "menu": ["Nasi Goreng", "Mie Ayam", "Es Jeruk"]
   },
   {
     "id": "r3",
-    "name": "Cafe Kopi Pagi Ceria",
-    "lat": -7.0234,
-    "lng": 110.4451,
-    "priceRange": "Rp20.000 - Rp50.000",
-    "category": "Cafe",
+    "name": "Angkringan Sari Senja",
+    "lat": -7.0280,
+    "lng": 110.4398,
+    "priceRange": "Rp5.000 - Rp18.000",
+    "category": "Angkringan",
     "operatingHours": {
-      "from": "06:30",
-      "to": "18:00"
+      "from": "17:00",
+      "to": "01:00"
     },
     "rating": 4,
-    "photos": ["/images/kopi.jpg"]
+    "menu": ["Nasi Kucing", "Sego Goreng", "Teh Manis"]
   },
   {
     "id": "r4",
-    "name": "Resto Ayam Bakar Mak Reja",
-    "lat": -7.0278,
-    "lng": 110.4437,
-    "priceRange": "Rp25.000 - Rp70.000",
-    "category": "Resto",
+    "name": "Kafe Kopi UNDIP",
+    "lat": -7.0235,
+    "lng": 110.4415,
+    "priceRange": "Rp18.000 - Rp45.000",
+    "category": "Kafe",
     "operatingHours": {
-      "from": "11:00",
-      "to": "22:30"
+      "from": "06:30",
+      "to": "21:30"
     },
-    "rating": 4,
-    "photos": ["/images/ayam.jpg"]
+    "rating": 5,
+    "menu": ["Americano", "Kopi Susu", "Pancake"]
   },
   {
     "id": "r5",
-    "name": "Bakso Juara Tembalang",
-    "lat": -7.0250,
-    "lng": 110.4470,
+    "name": "Warung Makan Bu Ani",
+    "lat": -7.0247,
+    "lng": 110.4377,
     "priceRange": "Rp12.000 - Rp30.000",
-    "category": "Bakso",
+    "category": "Warung",
     "operatingHours": {
       "from": "08:00",
-      "to": "21:00"
+      "to": "20:00"
     },
-    "rating": 5,
-    "photos": ["/images/bakso.jpg"]
+    "rating": 4,
+    "menu": ["Ayam Goreng", "Tahu Tempe", "Teh Pahit"]
   },
   {
     "id": "r6",
-    "name": "Geprek Sambal Mertua",
-    "lat": -7.0282,
-    "lng": 110.4418,
-    "priceRange": "Rp18.000 - Rp45.000",
-    "category": "Ayam Geprek",
+    "name": "Kantin Hijau Tembalang",
+    "lat": -7.0226,
+    "lng": 110.4383,
+    "priceRange": "Rp6.000 - Rp20.000",
+    "category": "Kantin",
     "operatingHours": {
-      "from": "10:00",
-      "to": "00:00"
+      "from": "07:30",
+      "to": "18:00"
     },
     "rating": 4,
-    "photos": ["/images/geprek.jpg"]
+    "menu": ["Lalapan", "Sop Ayam", "Es Teh"]
+  },
+  {
+    "id": "r7",
+    "name": "Angkringan Nasi Kucing",
+    "lat": -7.0292,
+    "lng": 110.4402,
+    "priceRange": "Rp5.000 - Rp15.000",
+    "category": "Angkringan",
+    "operatingHours": {
+      "from": "18:00",
+      "to": "23:30"
+    },
+    "rating": 5,
+    "menu": ["Nasi Kucing", "Sate Usus", "Kopi Joss"]
+  },
+  {
+    "id": "r8",
+    "name": "Kafe Santai Hati",
+    "lat": -7.0241,
+    "lng": 110.4430,
+    "priceRange": "Rp20.000 - Rp50.000",
+    "category": "Kafe",
+    "operatingHours": {
+      "from": "08:00",
+      "to": "22:00"
+    },
+    "rating": 4,
+    "menu": ["Latte", "Croissant", "Smoothie"]
   }
 ]
