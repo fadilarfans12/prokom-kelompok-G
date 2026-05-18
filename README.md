@@ -46,3 +46,4 @@ http://localhost:5173
 - Jika ingin menambahkan data baru, edit `data/restaurants.json` atau tambah melalui peta.
 - `src/firebase.js` hanya diperlukan jika Anda ingin menambahkan integrasi Firebase.
 
+#jKJHBhdSBc
