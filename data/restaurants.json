@@ -1,0 +1,18 @@
+[
+  {
+    "id": "r1",
+    "name": "Warung Soto Tembalang",
+    "lat": -7.0229,
+    "lng": 110.4448,
+    "priceRange": "Rp15.000 - Rp40.000",
+    "photos": ["/images/soto.jpg"]
+  },
+  {
+    "id": "r2",
+    "name": "Kedai Nasi Goreng Pak Aan",
+    "lat": -7.0261,
+    "lng": 110.4412,
+    "priceRange": "Rp10.000 - Rp35.000",
+    "photos": ["/images/nasgor.jpg"]
+  }
+]
