@@ -22,3 +22,4 @@ Edit file `src/firebase.js` dan masukkan konfigurasi project Firebase Anda (jika
 
 Catatan: peta memakai Leaflet + OpenStreetMap. Data contoh ada di `data/restaurants.json`.
 
+#jKJHBhdSBc
