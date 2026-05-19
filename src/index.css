@@ -1,9 +1,18 @@
 @import "leaflet/dist/leaflet.css";
 
+:root {
+  --color-1: #0ea5a4; /* teal */
+  --color-2: #7c3aed; /* purple */
+  --color-3: #ff7a59; /* coral/orange */
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+}
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #f3f5f9;
+  background: var(--bg);
   color: #2b2b2b;
 }
 
@@ -12,7 +21,7 @@ body {
 }
 
 .header {
-  background: #2c3e50;
+  background: linear-gradient(90deg, var(--color-1), var(--color-2));
   color: white;
   padding: 16px 20px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
@@ -33,7 +42,7 @@ body {
 .sidebar {
   width: 360px;
   min-width: 320px;
-  background: white;
+  background: var(--card);
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(30, 40, 70, 0.08);
   padding: 18px;
@@ -66,17 +75,18 @@ body {
 .sidebar-status,
 .sidebar-hint {
   margin: 6px 0 0;
-  color: #6b7280;
+  color: var(--muted);
   font-size: 0.95rem;
 }
 
 .sidebar-toggle {
   border: none;
-  background: #2563eb;
+  background: linear-gradient(90deg, var(--color-2), var(--color-1));
   color: white;
   border-radius: 10px;
   padding: 10px 14px;
   cursor: pointer;
+  box-shadow: 0 6px 18px rgba(12, 74, 110, 0.08);
 }
 
 .filter-section {
@@ -101,18 +111,18 @@ body {
 
 .chip-button {
   padding: 10px 14px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #e6e9ef;
   border-radius: 999px;
-  background: white;
-  color: #1f2937;
+  background: #fff;
+  color: #0f172a;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .chip-button.active {
-  background: #2563eb;
+  background: linear-gradient(90deg, var(--color-1), var(--color-2));
   color: white;
-  border-color: #2563eb;
+  border-color: transparent;
 }
 
 .budget-row,
@@ -144,6 +154,72 @@ body {
   border: 1px solid #d1d5db;
   background: white;
   color: #111827;
+}
+
+.recommendation-card {
+  border: 1px solid rgba(124,58,237,0.08);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.recommendation-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 1rem;
+}
+
+.recommendation-time {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.rec-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.rec-category {
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.rec-meta {
+  font-size: 0.9rem;
+  color: #374151;
+  margin-top: 6px;
+}
+
+.rec-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.rec-button {
+  border: none;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--color-2), var(--color-3));
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(124,58,237,0.12);
+}
+
+.rec-button.muted {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.recommendation-empty {
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .restaurant-list {
@@ -209,7 +285,7 @@ body {
 
 .empty-message {
   margin: 0;
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .main-content {
@@ -233,16 +309,19 @@ body {
   justify-content: center;
   align-items: flex-start;
   pointer-events: none;
+  z-index: 999;
 }
 
 .form-card {
   pointer-events: all;
+  z-index: 1000;
   width: min(420px, calc(100% - 40px));
   margin-top: 40px;
-  background: rgba(255, 255, 255, 0.98);
+  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(250,250,255,0.98) 100%);
   border-radius: 18px;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
   padding: 22px;
+  border: 1px solid rgba(14,165,164,0.06);
 }
 
 .form-card h3 {
@@ -314,6 +393,6 @@ body {
 }
 
 .submit-button {
-  background: #2563eb;
+  background: linear-gradient(90deg, var(--color-1), var(--color-2));
   color: white;
 }

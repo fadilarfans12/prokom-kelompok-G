@@ -51,6 +51,26 @@ function formatCurrency(value) {
   })
 }
 
+function parseTimeToMinutes(timeStr) {
+  if (!timeStr) return 0
+  const [h, m] = timeStr.split(':').map((x) => Number(x))
+  return h * 60 + m
+}
+
+function isPlaceOpenAt(place, timeStr) {
+  if (!place.operatingHours) return true
+  const from = parseTimeToMinutes(place.operatingHours.from || '00:00')
+  const to = parseTimeToMinutes(place.operatingHours.to || '23:59')
+  const t = parseTimeToMinutes(timeStr)
+
+  if (to >= from) {
+    return t >= from && t <= to
+  }
+
+  // Overnight (e.g., 18:00 - 02:00)
+  return t >= from || t <= to
+}
+
 export default function App() {
   const [places, setPlaces] = useState(restaurantData)
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -60,6 +80,7 @@ export default function App() {
   const [sortBy, setSortBy] = useState('recommended')
   const [userPosition, setUserPosition] = useState(null)
   const [geoError, setGeoError] = useState('Menunggu izin lokasi...')
+  const openedAt = useMemo(() => new Date(), [])
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -93,6 +114,26 @@ export default function App() {
     [places]
   )
 
+  const currentTimeString = useMemo(() => {
+    const d = openedAt
+    const hh = String(d.getHours()).padStart(2, '0')
+    const mm = String(d.getMinutes()).padStart(2, '0')
+    return `${hh}:${mm}`
+  }, [openedAt])
+
+  const recommendedPlace = useMemo(() => {
+    const openNow = placesWithMeta.filter((p) => isPlaceOpenAt(p, currentTimeString))
+    if (openNow.length === 0) return null
+
+    // Prefer higher rating, then closer distance
+    openNow.sort((a, b) => {
+      if ((b.rating || 0) !== (a.rating || 0)) return (b.rating || 0) - (a.rating || 0)
+      return a.distance - b.distance
+    })
+
+    return openNow[0]
+  }, [placesWithMeta, currentTimeString])
+
   const normalizedSearch = searchTerm.trim().toLowerCase()
 
   const filteredPlaces = useMemo(() => {
@@ -104,7 +145,8 @@ export default function App() {
         const matchesSearch =
           normalizedSearch === '' ||
           place.name.toLowerCase().includes(normalizedSearch) ||
-          place.menu.some((menuItem) => menuItem.toLowerCase().includes(normalizedSearch))
+          (Array.isArray(place.menu) &&
+            place.menu.some((menuItem) => menuItem.toLowerCase().includes(normalizedSearch)))
 
         return matchesCategory && matchesBudget && matchesSearch
       })
@@ -150,6 +192,41 @@ export default function App() {
             <button className="sidebar-toggle" onClick={() => setSidebarOpen((open) => !open)}>
               {sidebarOpen ? 'Hide' : 'Show'}
             </button>
+          </div>
+
+          <div className="recommendation-card">
+            <h3>Rekomendasi Sekarang</h3>
+            <div className="recommendation-time">Waktu buka aplikasi: {currentTimeString}</div>
+            {recommendedPlace ? (
+              <div className="recommendation-body">
+                <div className="rec-title">
+                  <strong>{recommendedPlace.name}</strong>
+                  <span className="rec-category">{recommendedPlace.category}</span>
+                </div>
+                <div className="rec-meta">Menu: {recommendedPlace.menu?.slice(0, 3).join(', ')}</div>
+                <div className="rec-meta">Rating: {recommendedPlace.rating || 0} ★</div>
+                <div className="rec-meta">
+                  Jam buka: {recommendedPlace.operatingHours?.from} - {recommendedPlace.operatingHours?.to}
+                </div>
+                <div className="rec-actions">
+                  <button
+                    type="button"
+                    className="rec-button"
+                    onClick={() => {
+                      setSearchTerm(recommendedPlace.name)
+                      setSortBy('recommended')
+                    }}
+                  >
+                    Cari di daftar
+                  </button>
+                  <button type="button" className="rec-button muted" onClick={() => setSidebarOpen(false)}>
+                    Tutup sidebar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="recommendation-empty">Tidak ada rekomendasi terbuka sekarang.</div>
+            )}
           </div>
 
           <div className="filter-section">
@@ -212,7 +289,9 @@ export default function App() {
                     <span>{place.category}</span>
                   </div>
                   <div className="restaurant-meta">Harga: {place.priceRange}</div>
-                  <div className="restaurant-meta">Menu: {place.menu.join(', ')}</div>
+                  <div className="restaurant-meta">
+                    Menu: {Array.isArray(place.menu) ? place.menu.join(', ') : 'Tidak tersedia'}
+                  </div>
                   <div className="restaurant-meta">
                     Jarak dari UNDIP: {place.distance} meter
                   </div>
