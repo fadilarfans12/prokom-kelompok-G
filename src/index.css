@@ -39,15 +39,21 @@ body {
   padding: 18px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease;
+  transition: width 320ms ease, transform 320ms ease, opacity 320ms ease, padding 320ms ease;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .sidebar.closed {
-  display: none;
   width: 0;
   min-width: 0;
   padding: 0;
   overflow: hidden;
+  transform: translateX(-12px);
+  opacity: 0;
 }
 
 .sidebar-top {
@@ -297,6 +303,35 @@ body {
   .sidebar {
     width: 100%;
     min-width: unset;
+  }
+}
+
+/* Floating open button */
+.floating-open {
+  position: fixed;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.24);
+  cursor: pointer;
+  z-index: 60;
+  opacity: 0;
+  animation: fadeIn 320ms ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
   }
 }
 

@@ -246,6 +246,16 @@ export default function App() {
           />
         </main>
       </div>
+
+      {!sidebarOpen && (
+        <button
+          className="floating-open"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Buka sidebar"
+        >
+          ☰
+        </button>
+      )}
     </div>
   )
 }
