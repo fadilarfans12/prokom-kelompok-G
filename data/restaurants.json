@@ -82,5 +82,33 @@
     },
     "rating": 4,
     "photos": ["/images/geprek.jpg"]
+  },
+  {
+    "id": "r7",
+    "name": "Kedai Bakmi Hemat",
+    "lat": -7.0242,
+    "lng": 110.4465,
+    "priceRange": "Rp6.000 - Rp10.000",
+    "category": "Bakmi",
+    "operatingHours": {
+      "from": "08:00",
+      "to": "20:00"
+    },
+    "rating": 4,
+    "photos": ["/images/bakmi.jpg"]
+  },
+  {
+    "id": "r8",
+    "name": "Warung Ketoprak Murah",
+    "lat": -7.0290,
+    "lng": 110.4425,
+    "priceRange": "Rp7.000 - Rp9.500",
+    "category": "Ketoprak",
+    "operatingHours": {
+      "from": "09:00",
+      "to": "21:00"
+    },
+    "rating": 5,
+    "photos": ["/images/ketoprak.jpg"]
   }
 ]

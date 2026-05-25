@@ -8,6 +8,11 @@ const TIME_LABELS = {
   night: 'Malam'
 }
 
+const PRICE_LABELS = {
+  all: 'Semua Harga',
+  cheap: 'Murah 6-10k'
+}
+
 const TIME_WINDOWS = {
   morning: { min: 360, max: 660 },
   noon: { min: 660, max: 960 },
@@ -25,6 +30,22 @@ function isOpenAt(period, hours) {
   const end = parseMinutes(hours.to)
   const { min, max } = TIME_WINDOWS[period]
   return time <= max && end >= min
+}
+
+function parsePriceRange(range) {
+  if (!range) return null
+  // Expect formats like "Rp6.000 - Rp10.000" or "6000-10000"
+  const parts = range
+    .split('-')
+    .map((part) => Number(part.replace(/[^0-9]/g, '').trim()))
+  if (parts.length !== 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null
+  return { min: parts[0], max: parts[1] }
+}
+
+function isPriceInRange(range, min, max) {
+  const parsed = parsePriceRange(range)
+  if (!parsed) return false
+  return parsed.min <= max && parsed.max >= min
 }
 
 function distanceKm(lat1, lng1, lat2, lng2) {
@@ -50,6 +71,8 @@ function getCurrentPeriod() {
 export default function App() {
   const [places, setPlaces] = useState([])
   const [filter, setFilter] = useState('all')
+  const [priceFilter, setPriceFilter] = useState('cheap')
+  const [maxBudget, setMaxBudget] = useState(50000)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [userPosition, setUserPosition] = useState(null)
   const [geoError, setGeoError] = useState('Menunggu izin lokasi...')
@@ -89,8 +112,11 @@ export default function App() {
   }, [])
 
   const filteredPlaces = places.filter((place) => {
-    if (filter === 'all') return true
-    return isOpenAt(filter, place.operatingHours)
+    const timeOk = filter === 'all' ? true : isOpenAt(filter, place.operatingHours)
+    // Check if place price max is within user's budget
+    const priceRange = parsePriceRange(place.priceRange)
+    const budgetOk = priceRange && priceRange.min <= maxBudget
+    return timeOk && budgetOk
   })
 
   const handleRating = (id, rating) => {
@@ -117,9 +143,17 @@ export default function App() {
               <p className="recommendation-text">
                 Rekomendasi otomatis: {recommendation || TIME_LABELS.all}
               </p>
+              <p className="price-prompt">
+                Prompt: tampilkan menu makanan murah dengan harga Rp6.000–Rp10.000.
+              </p>
             </div>
-            <button className="sidebar-toggle" onClick={() => setSidebarOpen((open) => !open)}>
-              {sidebarOpen ? 'Hide' : 'Show'}
+            <button
+              className="sidebar-toggle"
+              onClick={() => setSidebarOpen((open) => !open)}
+              aria-label={sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
+              title={sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
+            >
+              {sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
             </button>
           </div>
 
@@ -135,9 +169,48 @@ export default function App() {
             ))}
           </div>
 
+          <div className="price-controls">
+            {Object.keys(PRICE_LABELS).map((key) => (
+              <button
+                key={key}
+                className={priceFilter === key ? 'active' : ''}
+                onClick={() => setPriceFilter(key)}
+              >
+                {PRICE_LABELS[key]}
+              </button>
+            ))}
+          </div>
+
+          <div className="budget-controls">
+            <label htmlFor="max-budget">
+              Budget Maksimum:
+              <input
+                id="max-budget"
+                type="number"
+                min="0"
+                step="5000"
+                value={maxBudget}
+                onChange={(e) => setMaxBudget(Number(e.target.value) || 0)}
+                placeholder="Masukkan budget maksimum"
+              />
+            </label>
+            <p className="budget-display">
+              Rp {maxBudget.toLocaleString('id-ID')}
+            </p>
+          </div>
+
           <div className="restaurant-list">
             {filteredPlaces.length === 0 ? (
-              <p className="empty-message">Tidak ada tempat makan untuk periode ini.</p>
+              <div className="empty-message-container">
+                <p className="empty-message">
+                  Tidak ada rekomendasi sesuai filter.
+                </p>
+                <p className="empty-hint">
+                  {filter !== 'all' && maxBudget
+                    ? `Coba naikkan budget atau ubah periode waktu.`
+                    : `Coba ubah filter atau budget maksimum.`}
+                </p>
+              </div>
             ) : (
               filteredPlaces.map((place) => (
                 <div key={place.id} className="restaurant-card">
@@ -171,8 +244,15 @@ export default function App() {
                 </div>
               ))
             )}
-          </div>
+            </div>
         </aside>
+
+        {/** Overlay shown on small screens to allow closing sidebar by tapping outside */}
+        <div
+          className={`sidebar-overlay ${sidebarOpen ? 'visible' : ''}`}
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden={!sidebarOpen}
+        />
 
         <main className="main-content">
           <MapView
