@@ -7,6 +7,7 @@ const UNDIP_POSITION = {
   lng: 110.4389
 }
 
+<<<<<<< HEAD
 const CATEGORY_OPTIONS = ['all', 'Warung', 'Kantin', 'Angkringan', 'Kafe']
 const SORT_OPTIONS = [
   { value: 'recommended', label: 'Rekomendasi' },
@@ -20,6 +21,17 @@ const PRICE_SLIDER_MAX = 50000
 
 function parsePriceValue(raw) {
   return Number(raw.replace(/\D/g, '')) || 0
+=======
+const PRICE_LABELS = {
+  all: 'Semua Harga',
+  cheap: 'Murah 6-10k'
+}
+
+const TIME_WINDOWS = {
+  morning: { min: 360, max: 660 },
+  noon: { min: 660, max: 960 },
+  night: { min: 960, max: 1320 }
+>>>>>>> 511f4b8076aed806d131fdc82edfe36fe24157fb
 }
 
 function getPriceRange(priceRange) {
@@ -29,6 +41,16 @@ function getPriceRange(priceRange) {
     min: parsePriceValue(minRaw),
     max: parsePriceValue(maxRaw)
   }
+}
+
+function parsePriceRange(range) {
+  if (!range) return null
+  // Expect formats like "Rp6.000 - Rp10.000" or "6000-10000"
+  const parts = range
+    .split('-')
+    .map((part) => Number(part.replace(/[^0-9]/g, '').trim()))
+  if (parts.length !== 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null
+  return { min: parts[0], max: parts[1] }
 }
 
 function distanceKm(lat1, lng1, lat2, lng2) {
@@ -72,7 +94,14 @@ function isPlaceOpenAt(place, timeStr) {
 }
 
 export default function App() {
+<<<<<<< HEAD
   const [places, setPlaces] = useState(restaurantData)
+=======
+  const [places, setPlaces] = useState([])
+  const [filter, setFilter] = useState('all')
+  const [priceFilter, setPriceFilter] = useState('cheap')
+  const [maxBudget, setMaxBudget] = useState('50000')
+>>>>>>> 511f4b8076aed806d131fdc82edfe36fe24157fb
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [category, setCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
@@ -102,6 +131,7 @@ export default function App() {
     )
   }, [])
 
+<<<<<<< HEAD
   const placesWithMeta = useMemo(
     () =>
       places.map((place) => {
@@ -163,6 +193,24 @@ export default function App() {
         return b.rating - a.rating || a.distance - b.distance
       })
   }, [placesWithMeta, category, normalizedSearch, budgetMax, sortBy])
+=======
+  const numericBudget = Number(maxBudget)
+  const filteredPlaces = places.filter((place) => {
+    const timeOk = filter === 'all' ? true : isOpenAt(filter, place.operatingHours)
+    const priceRange = parsePriceRange(place.priceRange)
+
+    const priceFilterOk =
+      priceFilter === 'all'
+        ? true
+        : priceRange && priceRange.max <= 10000
+
+    const budgetOk =
+      !maxBudget ||
+      (priceRange && !Number.isNaN(numericBudget) && priceRange.max <= numericBudget)
+
+    return timeOk && priceFilterOk && budgetOk
+  })
+>>>>>>> 511f4b8076aed806d131fdc82edfe36fe24157fb
 
   const handleRating = (id, rating) => {
     setPlaces((current) =>
@@ -199,9 +247,17 @@ export default function App() {
               <p className="sidebar-hint">
                 Filter berdasarkan kategori, budget, dan urutkan tempat makan.
               </p>
+              <p className="price-prompt">
+                Prompt: tampilkan menu makanan murah dengan harga Rp6.000–Rp10.000.
+              </p>
             </div>
-            <button className="sidebar-toggle" onClick={() => setSidebarOpen((open) => !open)}>
-              {sidebarOpen ? 'Hide' : 'Show'}
+            <button
+              className="sidebar-toggle"
+              onClick={() => setSidebarOpen((open) => !open)}
+              aria-label={sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
+              title={sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
+            >
+              {sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
             </button>
           </div>
 
@@ -289,9 +345,52 @@ export default function App() {
             </div>
           </div>
 
+          <div className="price-controls">
+            {Object.keys(PRICE_LABELS).map((key) => (
+              <button
+                key={key}
+                className={priceFilter === key ? 'active' : ''}
+                onClick={() => setPriceFilter(key)}
+              >
+                {PRICE_LABELS[key]}
+              </button>
+            ))}
+          </div>
+
+          <div className="budget-controls">
+            <label htmlFor="max-budget">
+              Budget Maksimum:
+              <input
+                id="max-budget"
+                type="number"
+                min="0"
+                step="5000"
+                value={maxBudget}
+                onChange={(e) => setMaxBudget(e.target.value)}
+                placeholder="Masukkan budget maksimum"
+              />
+            </label>
+            <p className="budget-display">
+              {maxBudget ? `Rp ${Number(maxBudget).toLocaleString('id-ID')}` : 'Tidak ada batas'}
+            </p>
+          </div>
+
           <div className="restaurant-list">
             {filteredPlaces.length === 0 ? (
+<<<<<<< HEAD
               <p className="empty-message">Tidak ada tempat makan dengan filter ini.</p>
+=======
+              <div className="empty-message-container">
+                <p className="empty-message">
+                  Tidak ada rekomendasi sesuai filter.
+                </p>
+                <p className="empty-hint">
+                  {filter !== 'all' && maxBudget
+                    ? `Coba naikkan budget atau ubah periode waktu.`
+                    : `Coba ubah filter atau budget maksimum.`}
+                </p>
+              </div>
+>>>>>>> 511f4b8076aed806d131fdc82edfe36fe24157fb
             ) : (
               filteredPlaces.map((place) => (
                 <div key={place.id} className="restaurant-card">
@@ -325,9 +424,16 @@ export default function App() {
                 </div>
               ))
             )}
-          </div>
+            </div>
         </aside>
         </div>
+
+        {/** Overlay shown on small screens to allow closing sidebar by tapping outside */}
+        <div
+          className={`sidebar-overlay ${sidebarOpen ? 'visible' : ''}`}
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden={!sidebarOpen}
+        />
 
         <main className="main-content">
           <MapView

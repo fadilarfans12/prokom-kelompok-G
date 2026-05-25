@@ -1,6 +1,41 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
+import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+
+// Custom icon for user location - Blue with GPS symbol
+const userLocationIcon = L.divIcon({
+  html: `
+    <div class="marker-user-location">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5" fill="#3b82f6"></circle>
+        <circle cx="12" cy="12" r="8" fill="none" stroke="#3b82f6"></circle>
+        <path d="M12 2v4M12 18v4M22 12h-4M4 12H0M19.07 4.93l-2.83 2.83M7.76 16.24l-2.83 2.83M19.07 19.07l-2.83-2.83M7.76 7.76l-2.83-2.83" stroke="#3b82f6"></path>
+      </svg>
+      <div class="marker-pulse"></div>
+    </div>
+  `,
+  className: 'user-marker-icon',
+  iconSize: [40, 40],
+  iconAnchor: [20, 20],
+  popupAnchor: [0, -20]
+})
+
+// Custom icon for restaurant - Food/Fork & Knife symbol in orange
+const restaurantIcon = L.divIcon({
+  html: `
+    <div class="marker-restaurant">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+        <circle cx="12" cy="12" r="10" fill="#f97316"></circle>
+        <text x="12" y="16" text-anchor="middle" font-size="16" font-weight="bold" fill="white">🍽</text>
+      </svg>
+    </div>
+  `,
+  className: 'restaurant-marker-icon',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40]
+})
 
 function MapLongPress({ onLongPress }) {
   const [timeoutId, setTimeoutId] = useState(null)
@@ -130,13 +165,13 @@ export default function MapView({ visiblePlaces, userPosition, sidebarOpen, addP
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         {userPosition && (
-          <Marker position={[userPosition.lat, userPosition.lng]}>
+          <Marker position={[userPosition.lat, userPosition.lng]} icon={userLocationIcon}>
             <Popup>Lokasi Anda</Popup>
           </Marker>
         )}
 
         {visiblePlaces.map((place) => (
-          <Marker key={place.id} position={[place.lat, place.lng]}>
+          <Marker key={place.id} position={[place.lat, place.lng]} icon={restaurantIcon}>
             <Popup>
               <strong>{place.name}</strong>
               <div>Kategori: {place.category || 'Umum'}</div>

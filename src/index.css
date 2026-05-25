@@ -27,9 +27,52 @@ body {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
+<<<<<<< HEAD
 .header h1 {
   margin: 0;
   font-size: 1.55rem;
+=======
+/* layout spacing is defined once below (with align-items) */
+
+.sidebar {
+  width: 320px;
+  min-width: 280px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(30, 40, 70, 0.08);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 260ms cubic-bezier(.2,.8,.2,1), width 260ms ease, opacity 260ms ease;
+  transform: translateX(0);
+  opacity: 1;
+  z-index: 30;
+}
+
+.sidebar.closed {
+  transform: translateX(-110%);
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Overlay for mobile when sidebar is open */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.36);
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+.sidebar-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+>>>>>>> 511f4b8076aed806d131fdc82edfe36fe24157fb
 }
 
 .layout {
@@ -39,6 +82,7 @@ body {
   align-items: stretch;
 }
 
+<<<<<<< HEAD
 .sidebar-container {
   position: relative;
   display: flex;
@@ -74,6 +118,39 @@ body {
   transform: translateX(-12px);
   opacity: 0;
   flex: 0 0 0;
+=======
+/* Responsive tweaks: make sidebar overlay on small screens */
+@media (max-width: 900px) {
+  .layout {
+    padding: 12px;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 84px;
+    left: 12px;
+    bottom: 12px;
+    width: min(86%, 360px);
+    border-radius: 12px;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+.map-hint {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 10px 14px;
+  border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  font-size: 0.95rem;
+  color: #1f2937;
+  max-width: 280px;
+>>>>>>> 511f4b8076aed806d131fdc82edfe36fe24157fb
 }
 
 .sidebar-top {
@@ -96,6 +173,22 @@ body {
   font-size: 0.95rem;
 }
 
+<<<<<<< HEAD
+=======
+.recommendation-text {
+  margin: 6px 0 0;
+  color: #111827;
+  font-weight: 600;
+}
+
+.price-prompt {
+  margin: 8px 0 0;
+  color: #2563eb;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+>>>>>>> 511f4b8076aed806d131fdc82edfe36fe24157fb
 .sidebar-toggle {
   border: none;
   background: linear-gradient(90deg, var(--color-2), var(--color-1));
@@ -239,6 +332,68 @@ body {
   font-size: 0.95rem;
 }
 
+.price-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.price-controls button {
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #111827;
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.price-controls button.active {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.budget-controls {
+  margin-bottom: 18px;
+  padding: 12px;
+  background: #f0f9ff;
+  border-radius: 10px;
+  border: 1px solid #bfdbfe;
+}
+
+.budget-controls label {
+  display: block;
+  font-size: 0.95rem;
+  color: #111827;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.budget-controls input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.budget-controls input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.budget-display {
+  margin: 0;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
 .restaurant-list {
   display: flex;
   flex-direction: column;
@@ -303,6 +458,23 @@ body {
 .empty-message {
   margin: 0;
   color: var(--muted);
+}
+
+.empty-message-container {
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.empty-message-container .empty-message {
+  font-size: 1rem;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.empty-hint {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
 }
 
 .main-content {
@@ -447,4 +619,56 @@ body {
 .submit-button {
   background: linear-gradient(90deg, var(--color-1), var(--color-2));
   color: white;
+}
+
+/* Custom marker styles */
+.user-marker-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker-user-location {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
+}
+
+.marker-pulse {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+.restaurant-marker-icon {
+  filter: drop-shadow(0 2px 6px rgba(249, 115, 22, 0.4));
+}
+
+.marker-restaurant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
