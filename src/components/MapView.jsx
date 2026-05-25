@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -46,11 +46,13 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
     name: '',
     priceRange: '',
     category: '',
+    menu: '',
     from: '10:00',
     to: '22:00',
     photo: null
   })
   const [previewUrl, setPreviewUrl] = useState(null)
+  const nameRef = useRef(null)
 
   useEffect(() => {
     if (!formData.photo) {
@@ -63,6 +65,13 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
 
     return () => URL.revokeObjectURL(url)
   }, [formData.photo])
+
+  useEffect(() => {
+    if (addPoint && nameRef.current) {
+      // give the form a small delay so overlay is visible
+      setTimeout(() => nameRef.current && nameRef.current.focus(), 120)
+    }
+  }, [addPoint])
 
   const center = useMemo(() => {
     if (userPosition) return [userPosition.lat, userPosition.lng]
@@ -82,6 +91,10 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
       lng: addPoint.lng,
       priceRange: formData.priceRange,
       category: formData.category,
+      menu: formData.menu
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean),
       operatingHours: {
         from: formData.from,
         to: formData.to
@@ -92,7 +105,7 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
 
     addPlace(newPlace)
     setAddPoint(null)
-    setFormData({ name: '', priceRange: '', category: '', from: '10:00', to: '22:00', photo: null })
+    setFormData({ name: '', priceRange: '', category: '', menu: '', from: '10:00', to: '22:00', photo: null })
   }
 
   return (
@@ -132,11 +145,15 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
         <div className="form-overlay">
           <div className="form-card">
             <h3>Tambah Tempat Makan</h3>
-            <p>Tekan Submit setelah mengisi semua data.</p>
+            <p>Tekan Submit setelah mengisi semua data. Koordinat lokasi sudah terisi otomatis.</p>
+            <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 8 }}>
+              Koordinat: {addPoint.lat.toFixed(6)}, {addPoint.lng.toFixed(6)}
+            </div>
             <form onSubmit={handleSubmit}>
               <label>
                 Nama Tempat
                 <input
+                  ref={nameRef}
                   value={formData.name}
                   onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                   placeholder="Nama tempat makan"
@@ -158,6 +175,15 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
                   value={formData.priceRange}
                   onChange={(e) => setFormData((prev) => ({ ...prev, priceRange: e.target.value }))}
                   placeholder="Rp15.000 - Rp40.000"
+                  required
+                />
+              </label>
+              <label>
+                Menu (pisahkan pakai koma)
+                <input
+                  value={formData.menu}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, menu: e.target.value }))}
+                  placeholder="Contoh: Nasi Goreng, Soto, Es Teh"
                   required
                 />
               </label>

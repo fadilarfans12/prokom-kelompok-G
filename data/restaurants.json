@@ -1,114 +1,226 @@
 [
   {
     "id": "r1",
-    "name": "Warung Soto Tembalang",
-    "lat": -7.0262,
-    "lng": 110.4405,
-    "priceRange": "Rp10.000 - Rp35.000",
-    "category": "Warung",
+    "name": "Warung Makan Krengsengan Ayam BangBrot",
+    "lat": -7.0644675,
+    "lng": 110.4444261,
+    "priceRange": "Rp10.000 - Rp15.000",
+    "category": "Warung Makan",
     "operatingHours": {
-      "from": "07:00",
-      "to": "21:00"
+      "from": "10:00",
+      "to": "01:00"
     },
-    "rating": 4,
-    "menu": ["Soto", "Nasi Campur", "Es Teh"]
+    "rating": 4.9,
+    "menu": ["Krengsengan Ayam", "Tahu Campur"]
   },
   {
     "id": "r2",
-    "name": "Kantin Kampus Unggul",
-    "lat": -7.0254,
-    "lng": 110.4392,
-    "priceRange": "Rp8.000 - Rp22.000",
-    "category": "Kantin",
+    "name": "Sedap Malam (Warung Internet & Roti Bakar)",
+    "lat": -7.0605855,
+    "lng": 110.443302,
+    "priceRange": "Rp5.000 - Rp12.000",
+    "category": "Warkop / Angkringan",
     "operatingHours": {
-      "from": "08:00",
-      "to": "20:00"
+      "from": "16:00",
+      "to": "02:00"
     },
-    "rating": 5,
-    "menu": ["Nasi Goreng", "Mie Ayam", "Es Jeruk"]
+    "rating": 4.4,
+    "menu": ["Indomie", "Roti Bakar", "STMJ", "Kopi"]
   },
   {
     "id": "r3",
-    "name": "Angkringan Sari Senja",
-    "lat": -7.0280,
-    "lng": 110.4398,
-    "priceRange": "Rp5.000 - Rp18.000",
-    "category": "Angkringan",
+    "name": "Lawuh Ndeso Tembalang",
+    "lat": -7.0549489,
+    "lng": 110.4335373,
+    "priceRange": "Rp6.000 - Rp13.000",
+    "category": "Warung Makan",
     "operatingHours": {
-      "from": "17:00",
-      "to": "01:00"
+      "from": "08:00",
+      "to": "16:00"
     },
-    "rating": 4,
-    "menu": ["Nasi Kucing", "Sego Goreng", "Teh Manis"]
+    "rating": 4.4,
+    "menu": ["Masakan Tradisional", "Sayur Asem", "Ikan Goreng"]
   },
   {
     "id": "r4",
-    "name": "Kafe Kopi UNDIP",
-    "lat": -7.0235,
-    "lng": 110.4415,
-    "priceRange": "Rp18.000 - Rp45.000",
-    "category": "Kafe",
+    "name": "Kantin Tembalang",
+    "lat": -7.0634135,
+    "lng": 110.4397966,
+    "priceRange": "Rp5.000 - Rp12.000",
+    "category": "Kantin",
     "operatingHours": {
-      "from": "06:30",
-      "to": "21:30"
+      "from": "08:00",
+      "to": "23:00"
     },
-    "rating": 5,
-    "menu": ["Americano", "Kopi Susu", "Pancake"]
+    "rating": 4.7,
+    "menu": ["Nasi Rames", "Aneka Sayur", "Ayam Goreng"]
   },
   {
     "id": "r5",
-    "name": "Warung Makan Bu Ani",
-    "lat": -7.0247,
-    "lng": 110.4377,
-    "priceRange": "Rp12.000 - Rp30.000",
-    "category": "Warung",
+    "name": "Depot Sukses Tembalang",
+    "lat": -7.0583573,
+    "lng": 110.434754,
+    "priceRange": "Rp10.000 - Rp19.000",
+    "category": "Rumah Makan",
     "operatingHours": {
-      "from": "08:00",
-      "to": "20:00"
+      "from": "12:00",
+      "to": "21:00"
     },
-    "rating": 4,
-    "menu": ["Ayam Goreng", "Tahu Tempe", "Teh Pahit"]
+    "rating": 4.5,
+    "menu": ["Chicken Katsu", "Beef Teriyaki", "Masakan Jepang"]
   },
   {
     "id": "r6",
-    "name": "Kantin Hijau Tembalang",
-    "lat": -7.0226,
-    "lng": 110.4383,
-    "priceRange": "Rp6.000 - Rp20.000",
-    "category": "Kantin",
+    "name": "Sowak (Sop Iwak)",
+    "lat": -7.0612153,
+    "lng": 110.4355652,
+    "priceRange": "Rp8.000 - Rp15.000",
+    "category": "Rumah Makan",
     "operatingHours": {
-      "from": "07:30",
-      "to": "18:00"
+      "from": "10:00",
+      "to": "21:00"
     },
-    "rating": 4,
-    "menu": ["Lalapan", "Sop Ayam", "Es Teh"]
+    "rating": 4.4,
+    "menu": ["Sop Ikan", "Masakan Nusantara"]
   },
   {
     "id": "r7",
-    "name": "Angkringan Nasi Kucing",
-    "lat": -7.0292,
-    "lng": 110.4402,
-    "priceRange": "Rp5.000 - Rp15.000",
-    "category": "Angkringan",
+    "name": "Waroeng Spesial Sambal \"SS\" Tembalang",
+    "lat": -7.0568018,
+    "lng": 110.4289092,
+    "priceRange": "Rp7.000 - Rp15.000",
+    "category": "Rumah Makan",
     "operatingHours": {
-      "from": "18:00",
-      "to": "23:30"
+      "from": "10:00",
+      "to": "21:00"
     },
-    "rating": 5,
-    "menu": ["Nasi Kucing", "Sate Usus", "Kopi Joss"]
+    "rating": 4.2,
+    "menu": ["Aneka Sambal", "Ayam", "Ikan", "Tahu Tempe"]
   },
   {
     "id": "r8",
-    "name": "Kafe Santai Hati",
-    "lat": -7.0241,
-    "lng": 110.4430,
-    "priceRange": "Rp20.000 - Rp50.000",
-    "category": "Kafe",
+    "name": "Warung MJ",
+    "lat": -7.0521296,
+    "lng": 110.4433455,
+    "priceRange": "Rp4.000 - Rp10.000",
+    "category": "Warung Makan",
     "operatingHours": {
-      "from": "08:00",
+      "from": "06:00",
       "to": "22:00"
     },
-    "rating": 4,
-    "menu": ["Latte", "Croissant", "Smoothie"]
+    "rating": 4.7,
+    "menu": ["Soto Ayam", "Masakan Harian"]
+  },
+  {
+    "id": "r9",
+    "name": "Warteg Kharisma Bahari Cabang Tembalang",
+    "lat": -7.0556966,
+    "lng": 110.4363773,
+    "priceRange": "Rp5.000 - Rp12.000",
+    "category": "Warteg",
+    "operatingHours": {
+      "from": "00:00",
+      "to": "23:59"
+    },
+    "rating": 4.4,
+    "menu": ["Nasi Rames", "Aneka Lauk"]
+  },
+  {
+    "id": "r10",
+    "name": "Warteg Citra Muncul",
+    "lat": -7.0596652,
+    "lng": 110.4385107,
+    "priceRange": "Rp5.000 - Rp13.000",
+    "category": "Warteg",
+    "operatingHours": {
+      "from": "05:30",
+      "to": "21:00"
+    },
+    "rating": 4.5,
+    "menu": ["Nasi Rames", "Masakan Jawa"]
+  },
+  {
+    "id": "r11",
+    "name": "Angkringan Dot Com",
+    "lat": -7.0559388,
+    "lng": 110.437802,
+    "priceRange": "Rp3.000 - Rp10.000",
+    "category": "Angkringan",
+    "operatingHours": {
+      "from": "17:00",
+      "to": "01:15"
+    },
+    "rating": 4.7,
+    "menu": ["Nasi Kucing", "Sate", "Gorengan", "Wedang"]
+  },
+  {
+    "id": "r12",
+    "name": "Warteg Ibu Dewi Undip Tembalang",
+    "lat": -7.0562525,
+    "lng": 110.4406459,
+    "priceRange": "Rp5.000 - Rp12.000",
+    "category": "Warteg",
+    "operatingHours": {
+      "from": "05:00",
+      "to": "21:30"
+    },
+    "rating": 4.5,
+    "menu": ["Nasi Rames", "Aneka Sayur & Lauk"]
+  },
+  {
+    "id": "r13",
+    "name": "Warteg Pulang Pagi Gondang",
+    "lat": -7.0653272,
+    "lng": 110.4405342,
+    "priceRange": "Rp6.000 - Rp17.000",
+    "category": "Warteg",
+    "operatingHours": {
+      "from": "06:00",
+      "to": "22:00"
+    },
+    "rating": 4.7,
+    "menu": ["Nasi Rames", "Masakan Rumahan"]
+  },
+  {
+    "id": "r14",
+    "name": "Kantin Dekanat FT UNDIP",
+    "lat": -7.0511383,
+    "lng": 110.4401091,
+    "priceRange": "Rp4.000 - Rp10.000",
+    "category": "Kantin Kampus",
+    "operatingHours": {
+      "from": "07:00",
+      "to": "17:00"
+    },
+    "rating": 4.6,
+    "menu": ["Soto", "Pecel", "Ayam Geprek"]
+  },
+  {
+    "id": "r15",
+    "name": "Kantin Sekolah Vokasi Undip",
+    "lat": -7.0501538,
+    "lng": 110.4347734,
+    "priceRange": "Rp4.000 - Rp10.000",
+    "category": "Kantin Kampus",
+    "operatingHours": {
+      "from": "07:00",
+      "to": "16:00"
+    },
+    "rating": 4.8,
+    "menu": ["Bakso", "Soto", "Ayam Geprek"]
+  },
+  {
+    "id": "r16",
+    "name": "Kantin FPIK UNDIP",
+    "lat": -7.0501531,
+    "lng": 110.4433307,
+    "priceRange": "Rp4.000 - Rp11.000",
+    "category": "Kantin Kampus",
+    "operatingHours": {
+      "from": "08:00",
+      "to": "16:00"
+    },
+    "rating": 4.3,
+    "menu": ["Masakan Harian", "Lauk Pauk"]
   }
 ]
