@@ -180,8 +180,19 @@ export default function App() {
         <h1>Rekomendasi Tempat Makan Tembalang</h1>
       </header>
       <div className="layout">
-        <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
-          <div className="sidebar-top">
+        <div className="sidebar-container">
+          {!sidebarOpen && (
+            <button
+              className="floating-open"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Buka sidebar"
+              title="Buka sidebar"
+            >
+              ☰
+            </button>
+          )}
+          <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+            <div className="sidebar-top">
             <div>
               <h2>Filter & Cari</h2>
               <p className="sidebar-status">{geoError}</p>
@@ -316,6 +327,7 @@ export default function App() {
             )}
           </div>
         </aside>
+        </div>
 
         <main className="main-content">
           <MapView
@@ -326,16 +338,6 @@ export default function App() {
           />
         </main>
       </div>
-
-      {!sidebarOpen && (
-        <button
-          className="floating-open"
-          onClick={() => setSidebarOpen(true)}
-          aria-label="Buka sidebar"
-        >
-          ☰
-        </button>
-      )}
     </div>
   )
 }

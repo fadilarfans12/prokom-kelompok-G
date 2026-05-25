@@ -39,6 +39,13 @@ body {
   align-items: stretch;
 }
 
+.sidebar-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+
 .sidebar {
   flex: 0 0 auto;
   width: 360px;
@@ -305,6 +312,7 @@ body {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 12px 30px rgba(30, 40, 70, 0.08);
+  transition: width 320ms ease, margin 320ms ease;
 }
 
 .map-wrapper {
@@ -391,30 +399,31 @@ body {
 
 /* Floating open button */
 .floating-open {
-  position: fixed;
-  left: 12px;
+  position: absolute;
+  right: -28px;
   top: 50%;
   transform: translateY(-50%);
   width: 44px;
   height: 44px;
-  background: #2563eb;
+  background: linear-gradient(90deg, var(--color-2), var(--color-3));
   color: white;
   border: none;
   padding: 0;
-  border-radius: 14px;
+  border-radius: 10px;
   box-shadow: 0 8px 20px rgba(37, 99, 235, 0.24);
   cursor: pointer;
-  z-index: 60;
+  z-index: 50;
   opacity: 0;
   display: grid;
   place-items: center;
-  animation: fadeIn 320ms ease forwards;
+  font-size: 1.25rem;
+  animation: slideInRight 320ms ease forwards;
 }
 
-@keyframes fadeIn {
+@keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateY(-50%) translateX(-8px);
+    transform: translateY(-50%) translateX(8px);
   }
   to {
     opacity: 1;

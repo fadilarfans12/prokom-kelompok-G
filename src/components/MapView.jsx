@@ -78,7 +78,7 @@ export default function MapView({ visiblePlaces, userPosition, sidebarOpen, addP
     if (mapRef.current) {
       window.setTimeout(() => {
         mapRef.current.invalidateSize()
-      }, 120)
+      }, 340)
     }
   }, [sidebarOpen])
 
