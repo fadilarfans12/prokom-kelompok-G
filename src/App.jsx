@@ -42,12 +42,6 @@ function parsePriceRange(range) {
   return { min: parts[0], max: parts[1] }
 }
 
-function isPriceInRange(range, min, max) {
-  const parsed = parsePriceRange(range)
-  if (!parsed) return false
-  return parsed.min <= max && parsed.max >= min
-}
-
 function distanceKm(lat1, lng1, lat2, lng2) {
   const toRad = (value) => (value * Math.PI) / 180
   const R = 6371
@@ -72,7 +66,7 @@ export default function App() {
   const [places, setPlaces] = useState([])
   const [filter, setFilter] = useState('all')
   const [priceFilter, setPriceFilter] = useState('cheap')
-  const [maxBudget, setMaxBudget] = useState(50000)
+  const [maxBudget, setMaxBudget] = useState('50000')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [userPosition, setUserPosition] = useState(null)
   const [geoError, setGeoError] = useState('Menunggu izin lokasi...')
@@ -111,12 +105,21 @@ export default function App() {
     )
   }, [])
 
+  const numericBudget = Number(maxBudget)
   const filteredPlaces = places.filter((place) => {
     const timeOk = filter === 'all' ? true : isOpenAt(filter, place.operatingHours)
-    // Check if place price max is within user's budget
     const priceRange = parsePriceRange(place.priceRange)
-    const budgetOk = priceRange && priceRange.min <= maxBudget
-    return timeOk && budgetOk
+
+    const priceFilterOk =
+      priceFilter === 'all'
+        ? true
+        : priceRange && priceRange.max <= 10000
+
+    const budgetOk =
+      !maxBudget ||
+      (priceRange && !Number.isNaN(numericBudget) && priceRange.max <= numericBudget)
+
+    return timeOk && priceFilterOk && budgetOk
   })
 
   const handleRating = (id, rating) => {
@@ -190,12 +193,12 @@ export default function App() {
                 min="0"
                 step="5000"
                 value={maxBudget}
-                onChange={(e) => setMaxBudget(Number(e.target.value) || 0)}
+                onChange={(e) => setMaxBudget(e.target.value)}
                 placeholder="Masukkan budget maksimum"
               />
             </label>
             <p className="budget-display">
-              Rp {maxBudget.toLocaleString('id-ID')}
+              {maxBudget ? `Rp ${Number(maxBudget).toLocaleString('id-ID')}` : 'Tidak ada batas'}
             </p>
           </div>
 
