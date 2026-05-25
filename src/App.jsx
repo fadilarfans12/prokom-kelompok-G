@@ -321,6 +321,7 @@ export default function App() {
           <MapView
             visiblePlaces={filteredPlaces}
             userPosition={userPosition}
+            sidebarOpen={sidebarOpen}
             addPlace={handleAddPlace}
           />
         </main>

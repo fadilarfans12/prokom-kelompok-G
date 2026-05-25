@@ -40,7 +40,7 @@ function MapLongPress({ onLongPress }) {
   return null
 }
 
-export default function MapView({ visiblePlaces, userPosition, addPlace }) {
+export default function MapView({ visiblePlaces, userPosition, sidebarOpen, addPlace }) {
   const [addPoint, setAddPoint] = useState(null)
   const [formData, setFormData] = useState({
     name: '',
@@ -53,6 +53,7 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
   })
   const [previewUrl, setPreviewUrl] = useState(null)
   const nameRef = useRef(null)
+  const mapRef = useRef(null)
 
   useEffect(() => {
     if (!formData.photo) {
@@ -72,6 +73,14 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
       setTimeout(() => nameRef.current && nameRef.current.focus(), 120)
     }
   }, [addPoint])
+
+  useEffect(() => {
+    if (mapRef.current) {
+      window.setTimeout(() => {
+        mapRef.current.invalidateSize()
+      }, 120)
+    }
+  }, [sidebarOpen])
 
   const center = useMemo(() => {
     if (userPosition) return [userPosition.lat, userPosition.lng]
@@ -110,7 +119,14 @@ export default function MapView({ visiblePlaces, userPosition, addPlace }) {
 
   return (
     <div className="map-wrapper">
-      <MapContainer center={center} zoom={14} style={{ height: '100%', width: '100%' }}>
+      <MapContainer
+        center={center}
+        zoom={14}
+        style={{ height: '100%', width: '100%' }}
+        whenCreated={(map) => {
+          mapRef.current = map
+        }}
+      >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
         {userPosition && (
