@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+﻿import React, { useEffect, useMemo, useState } from 'react'
 import MapView from './components/MapView'
 import restaurantData from '../data/restaurants.json'
 
@@ -18,6 +18,11 @@ const SORT_OPTIONS = [
 const PRICE_SLIDER_MIN = 5000
 const PRICE_SLIDER_MAX = 50000
 
+const PRICE_LABELS = {
+  all: 'Semua Harga',
+  cheap: 'Murah 6-10k'
+}
+
 function parsePriceValue(raw) {
   return Number(raw.replace(/\D/g, '')) || 0
 }
@@ -33,6 +38,7 @@ function getPriceRange(priceRange) {
 
 function parsePriceRange(range) {
   if (!range) return null
+  // Expect formats like "Rp6.000 - Rp10.000" or "6000-10000"
   const parts = range
     .split('-')
     .map((part) => Number(part.replace(/[^0-9]/g, '').trim()))
@@ -76,11 +82,24 @@ function isPlaceOpenAt(place, timeStr) {
     return t >= from && t <= to
   }
 
+  // Overnight (e.g., 18:00 - 02:00)
   return t >= from || t <= to
 }
 
+const STORAGE_KEY = 'prokom-kelompok-G-places'
+
 export default function App() {
-  const [places, setPlaces] = useState(restaurantData)
+  const [places, setPlaces] = useState(() => {
+    if (typeof window === 'undefined') return restaurantData
+    try {
+      const stored = window.localStorage.getItem(STORAGE_KEY)
+      return stored ? JSON.parse(stored) : restaurantData
+    } catch {
+      return restaurantData
+    }
+  })
+  const [priceFilter, setPriceFilter] = useState('all')
+  const [maxBudget, setMaxBudget] = useState('50000')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [category, setCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
@@ -133,6 +152,7 @@ export default function App() {
     const openNow = placesWithMeta.filter((p) => isPlaceOpenAt(p, currentTimeString))
     if (openNow.length === 0) return null
 
+    // Prefer higher rating, then closer distance
     openNow.sort((a, b) => {
       if ((b.rating || 0) !== (a.rating || 0)) return (b.rating || 0) - (a.rating || 0)
       return a.distance - b.distance
@@ -142,6 +162,7 @@ export default function App() {
   }, [placesWithMeta, currentTimeString])
 
   const normalizedSearch = searchTerm.trim().toLowerCase()
+  const numericMaxBudget = Number(maxBudget)
 
   const filteredPlaces = useMemo(() => {
     return placesWithMeta
@@ -149,13 +170,19 @@ export default function App() {
         const matchesCategory =
           category === 'all' || place.category.toLowerCase() === category.toLowerCase()
         const matchesBudget = place.price.min <= budgetMax
+        const priceFilterOk =
+          priceFilter === 'all' ||
+          (place.price && place.price.max <= 10000)
+        const maxBudgetOk =
+          !maxBudget ||
+          (place.price && !Number.isNaN(numericMaxBudget) && place.price.max <= numericMaxBudget)
         const matchesSearch =
           normalizedSearch === '' ||
           place.name.toLowerCase().includes(normalizedSearch) ||
           (Array.isArray(place.menu) &&
             place.menu.some((menuItem) => menuItem.toLowerCase().includes(normalizedSearch)))
 
-        return matchesCategory && matchesBudget && matchesSearch
+        return matchesCategory && matchesBudget && priceFilterOk && maxBudgetOk && matchesSearch
       })
       .sort((a, b) => {
         if (sortBy === 'terdekat') {
@@ -169,7 +196,7 @@ export default function App() {
         }
         return b.rating - a.rating || a.distance - b.distance
       })
-  }, [placesWithMeta, category, normalizedSearch, budgetMax, sortBy])
+  }, [placesWithMeta, category, normalizedSearch, budgetMax, sortBy, priceFilter, maxBudget])
 
   const handleRating = (id, rating) => {
     setPlaces((current) =>
@@ -180,6 +207,11 @@ export default function App() {
   const handleAddPlace = (newPlace) => {
     setPlaces((current) => [newPlace, ...current])
   }
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(places))
+  }, [places])
 
   return (
     <div className="app">
@@ -195,115 +227,184 @@ export default function App() {
               aria-label="Buka sidebar"
               title="Buka sidebar"
             >
-              ☰
+              Γÿ░
             </button>
           )}
           <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
             <div className="sidebar-top">
-              <div>
-                <h2>Filter & Cari</h2>
-                <p className="sidebar-status">{geoError}</p>
-                <p className="sidebar-hint">
-                  Filter berdasarkan kategori, budget, dan urutkan tempat makan.
-                </p>
-              </div>
-              <button
-                className="sidebar-toggle"
-                onClick={() => setSidebarOpen((open) => !open)}
-              >
-                {sidebarOpen ? 'Hide' : 'Show'}
-              </button>
+            <div>
+              <h2>Filter & Cari</h2>
+              <p className="sidebar-status">{geoError}</p>
+              <p className="sidebar-hint">
+                Filter berdasarkan kategori, budget, dan urutkan tempat makan.
+              </p>
+              <p className="price-prompt">
+                Prompt: tampilkan menu makanan murah dengan harga Rp6.000ΓÇôRp10.000.
+              </p>
             </div>
+            <button
+              className="sidebar-toggle"
+              onClick={() => setSidebarOpen((open) => !open)}
+              aria-label={sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
+              title={sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
+            >
+              {sidebarOpen ? 'Tutup Sidebar' : 'Tampilkan Sidebar'}
+            </button>
+          </div>
 
-            <div className="filter-section">
-              <div className="search-box">
-                <input
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Cari nama tempat atau menu"
-                />
-              </div>
-
-              <div className="chip-group">
-                {CATEGORY_OPTIONS.map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    className={`chip-button ${category === option ? 'active' : ''}`}
-                    onClick={() => setCategory(option)}
-                  >
-                    {option === 'all' ? 'Semua' : option}
-                  </button>
-                ))}
-              </div>
-
-              <div className="budget-row">
-                <div>
-                  <label>Budget maksimum</label>
-                  <strong>{formatCurrency(budgetMax)}</strong>
+          <div className="recommendation-card">
+            <h3>Rekomendasi Sekarang</h3>
+            <div className="recommendation-time">Waktu buka aplikasi: {currentTimeString}</div>
+            {recommendedPlace ? (
+              <div className="recommendation-body">
+                <div className="rec-title">
+                  <strong>{recommendedPlace.name}</strong>
+                  <span className="rec-category">{recommendedPlace.category}</span>
                 </div>
-                <input
-                  type="range"
-                  min={PRICE_SLIDER_MIN}
-                  max={PRICE_SLIDER_MAX}
-                  step={5000}
-                  value={budgetMax}
-                  onChange={(e) => setBudgetMax(Number(e.target.value))}
-                />
+                <div className="rec-meta">Menu: {recommendedPlace.menu?.slice(0, 3).join(', ')}</div>
+                <div className="rec-meta">Rating: {recommendedPlace.rating || 0} Γÿà</div>
+                <div className="rec-meta">
+                  Jam buka: {recommendedPlace.operatingHours?.from} - {recommendedPlace.operatingHours?.to}
+                </div>
+                <div className="rec-actions">
+                  <button
+                    type="button"
+                    className="rec-button"
+                    onClick={() => {
+                      setSearchTerm(recommendedPlace.name)
+                      setSortBy('recommended')
+                    }}
+                  >
+                    Cari di daftar
+                  </button>
+                  <button type="button" className="rec-button muted" onClick={() => setSidebarOpen(false)}>
+                    Tutup sidebar
+                  </button>
+                </div>
               </div>
+            ) : (
+              <div className="recommendation-empty">Tidak ada rekomendasi terbuka sekarang.</div>
+            )}
+          </div>
 
-              <div className="sort-row">
-                <label>Urutkan berdasarkan</label>
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  {SORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          <div className="filter-section">
+            <div className="search-box">
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Cari nama tempat atau menu"
+              />
             </div>
 
-            <div className="restaurant-list">
-              {filteredPlaces.length === 0 ? (
-                <p className="empty-message">Tidak ada tempat makan dengan filter ini.</p>
-              ) : (
-                filteredPlaces.map((place) => (
-                  <div key={place.id} className="restaurant-card">
-                    <div className="restaurant-title">
-                      <strong>{place.name}</strong>
-                      <span>{place.category}</span>
-                    </div>
-                    <div className="restaurant-meta">Harga: {place.priceRange}</div>
-                    <div className="restaurant-meta">Menu: {Array.isArray(place.menu) ? place.menu.join(', ') : 'Tidak tersedia'}</div>
-                    <div className="restaurant-meta">Jarak dari UNDIP: {place.distance} meter</div>
-                    <div className="restaurant-meta">Jam buka: {place.operatingHours.from} - {place.operatingHours.to}</div>
-                    <div className="rating-row">
-                      <span>Rating:</span>
-                      {[1, 2, 3, 4, 5].map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          className={place.rating >= value ? 'star active' : 'star'}
-                          onClick={() => handleRating(place.id, value)}
-                        >
-                          ★
-                        </button>
-                      ))}
-                    </div>
+            <div className="chip-group">
+              {CATEGORY_OPTIONS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={`chip-button ${category === option ? 'active' : ''}`}
+                  onClick={() => setCategory(option)}
+                >
+                  {option === 'all' ? 'Semua' : option}
+                </button>
+              ))}
+            </div>
+
+            <div className="budget-row">
+              <div>
+                <label>Budget maksimum</label>
+                <strong>{formatCurrency(budgetMax)}</strong>
+              </div>
+              <input
+                type="range"
+                min={PRICE_SLIDER_MIN}
+                max={PRICE_SLIDER_MAX}
+                step={5000}
+                value={budgetMax}
+                onChange={(e) => setBudgetMax(Number(e.target.value))}
+              />
+            </div>
+
+            <div className="sort-row">
+              <label>Urutkan berdasarkan</label>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="price-controls">
+            {Object.keys(PRICE_LABELS).map((key) => (
+              <button
+                key={key}
+                className={priceFilter === key ? 'active' : ''}
+                onClick={() => setPriceFilter(key)}
+              >
+                {PRICE_LABELS[key]}
+              </button>
+            ))}
+          </div>
+
+          <div className="budget-controls">
+            <label htmlFor="max-budget">
+              Budget Maksimum:
+              <input
+                id="max-budget"
+                type="number"
+                min="0"
+                step="5000"
+                value={maxBudget}
+                onChange={(e) => setMaxBudget(e.target.value)}
+                placeholder="Masukkan budget maksimum"
+              />
+            </label>
+            <p className="budget-display">
+              {maxBudget ? `Rp ${Number(maxBudget).toLocaleString('id-ID')}` : 'Tidak ada batas'}
+            </p>
+          </div>
+
+          <div className="restaurant-list">
+            {filteredPlaces.length === 0 ? (
+              <p className="empty-message">Tidak ada tempat makan dengan filter ini.</p>
+            ) : (
+              filteredPlaces.map((place) => (
+                <div key={place.id} className="restaurant-card">
+                  <div className="restaurant-title">
+                    <strong>{place.name}</strong>
+                    <span>{place.category}</span>
                   </div>
-                ))
-              )}
+                  <div className="restaurant-meta">Harga: {place.priceRange}</div>
+                  <div className="restaurant-meta">
+                    Menu: {Array.isArray(place.menu) ? place.menu.join(', ') : 'Tidak tersedia'}
+                  </div>
+                  <div className="restaurant-meta">
+                    Jarak dari UNDIP: {place.distance} meter
+                  </div>
+                  <div className="restaurant-meta">
+                    Jam buka: {place.operatingHours.from} - {place.operatingHours.to}
+                  </div>
+                  <div className="rating-row">
+                    <span>Rating:</span>
+                    {[1, 2, 3, 4, 5].map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={place.rating >= value ? 'star active' : 'star'}
+                        onClick={() => handleRating(place.id, value)}
+                      >
+                        Γÿà
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
             </div>
-          </aside>
+        </aside>
         </div>
-
-        {/** Overlay shown on small screens to allow closing sidebar by tapping outside */}
-        <div
-          className={`sidebar-overlay ${sidebarOpen ? 'visible' : ''}`}
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden={!sidebarOpen}
-        />
 
         <main className="main-content">
           <MapView
@@ -314,6 +415,13 @@ export default function App() {
           />
         </main>
       </div>
+
+      {/** Overlay shown on small screens to allow closing sidebar by tapping outside */}
+      <div
+        className={`sidebar-overlay ${sidebarOpen ? 'visible' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden={!sidebarOpen}
+      />
     </div>
   )
 }

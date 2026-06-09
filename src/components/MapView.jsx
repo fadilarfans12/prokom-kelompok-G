@@ -110,17 +110,31 @@ export default function MapView({ visiblePlaces, userPosition, sidebarOpen, addP
   }, [addPoint])
 
   useEffect(() => {
-    if (mapRef.current) {
-      window.setTimeout(() => {
-        mapRef.current.invalidateSize()
-      }, 340)
+    if (!mapRef.current) return
+
+    const resizeMap = () => {
+      mapRef.current.invalidateSize({ reset: true })
     }
+
+    const timeoutId = window.setTimeout(() => {
+      resizeMap()
+      window.requestAnimationFrame(resizeMap)
+    }, 300)
+
+    return () => window.clearTimeout(timeoutId)
   }, [sidebarOpen])
 
   const center = useMemo(() => {
     if (userPosition) return [userPosition.lat, userPosition.lng]
     return [-7.024, 110.444]
   }, [userPosition])
+
+  const scrollToMapCenter = () => {
+    if (!mapRef.current) return
+    const zoom = mapRef.current.getZoom() || 14
+    mapRef.current.setView(center, zoom, { animate: true })
+    mapRef.current.invalidateSize()
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -191,6 +205,15 @@ export default function MapView({ visiblePlaces, userPosition, sidebarOpen, addP
       <div className="map-hint">
         Tekan lama di peta untuk menambahkan tempat makan baru
       </div>
+
+      <button
+        type="button"
+        className="map-scroll-button"
+        onClick={scrollToMapCenter}
+        title="Scroll ke tengah peta"
+      >
+        ⤵
+      </button>
 
       {addPoint && (
         <div className="form-overlay">
