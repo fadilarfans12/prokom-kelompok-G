@@ -218,7 +218,7 @@ export default function App() {
       <header className="header">
         <h1>Rekomendasi Tempat Makan Tembalang</h1>
       </header>
-      <div className="layout">
+      <div className={`layout ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
         <div className="sidebar-container">
           {!sidebarOpen && (
             <button
@@ -415,13 +415,6 @@ export default function App() {
           />
         </main>
       </div>
-
-      {/** Overlay shown on small screens to allow closing sidebar by tapping outside */}
-      <div
-        className={`sidebar-overlay ${sidebarOpen ? 'visible' : ''}`}
-        onClick={() => setSidebarOpen(false)}
-        aria-hidden={!sidebarOpen}
-      />
     </div>
   )
 }
