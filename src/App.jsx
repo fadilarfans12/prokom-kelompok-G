@@ -219,17 +219,15 @@ export default function App() {
         <h1>Rekomendasi Tempat Makan Tembalang</h1>
       </header>
       <div className={`layout ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+        <button
+          className="floating-open"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Buka sidebar"
+          title="Buka Sidebar"
+        >
+          ☰
+        </button>
         <div className="sidebar-container">
-          {!sidebarOpen && (
-            <button
-              className="floating-open"
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Buka sidebar"
-              title="Buka sidebar"
-            >
-              Γÿ░
-            </button>
-          )}
           <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
             <div className="sidebar-top">
             <div>
